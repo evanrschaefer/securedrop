@@ -5,6 +5,7 @@ import os
 from os.path import abspath, dirname, exists, getmtime, join, realpath
 os.environ['SECUREDROP_ENV'] = 'test'  # noqa
 import config
+import datetime
 import logging
 import manage
 import mock
@@ -22,6 +23,7 @@ import journalist_app
 
 from db import db
 from models import Journalist
+from utils import db_helper
 
 
 YUBIKEY_HOTP = ['cb a0 5f ad 41 a2 ff 4e eb 53 56 3a 1b f7 23 2e ce fc dc',
@@ -376,6 +378,23 @@ class TestManage(object):
         manage.setup_verbosity(args)
         manage.clean_tmp(args)
         assert 'FILE removed' in caplog.text
+
+    def test_were_there_submissions_today(self, tmpdir):
+        data_root = tmpdir
+        args = argparse.Namespace(data_root=str(data_root),
+                                  verbose=logging.DEBUG)
+
+        count_file = data_root.join('submissions_today.txt')
+        source, codename = db_helper.init_source_without_keypair()
+        source.last_updated = (datetime.datetime.utcnow() -
+                               datetime.timedelta(hours=24*2))
+        db.session.commit()
+        manage.were_there_submissions_today(args)
+        assert count_file.read() == "0"
+        source.last_updated = datetime.datetime.utcnow()
+        db.session.commit()
+        manage.were_there_submissions_today(args)
+        assert count_file.read() == "1"
 
 
 class TestSh(object):
