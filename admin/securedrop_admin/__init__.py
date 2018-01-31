@@ -42,6 +42,10 @@ class FingerprintException(Exception):
     pass
 
 
+class JournalistAlertEmailException(Exception):
+    pass
+
+
 class SiteConfig(object):
 
     class ValidateNotEmpty(Validator):
@@ -340,6 +344,7 @@ class SiteConfig(object):
         self.config.update(self.user_prompt_config())
         self.save()
         self.validate_gpg_keys()
+        self.validate_journalist_alert_email()
         return True
 
     def user_prompt_config(self):
@@ -409,6 +414,23 @@ class SiteConfig(object):
                     "fingerprint {} ".format(fingerprint) +
                     "does not match " +
                     "the public key {}".format(public_key))
+        return True
+
+    def validate_journalist_alert_email(self):
+        if (self.config['journalist_alert_gpg_public_key'] == '' and
+                self.config['journalist_gpg_fpr'] == ''):
+            return True
+
+        class Document(object):
+            def __init__(self, text):
+                self.text = text
+
+        try:
+            SiteConfig.ValidateEmail().validate(Document(
+                self.config['journalist_alert_email']))
+        except ValidationError as e:
+            raise JournalistAlertEmailException(
+                "journalist alerts email: " + e.message)
         return True
 
     def exists(self):
