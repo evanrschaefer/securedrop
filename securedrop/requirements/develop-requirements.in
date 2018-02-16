@@ -12,6 +12,7 @@ pip-tools>=1.10
 #
 pylint
 pytest-xdist
+python-vagrant
 safety
 sphinx
 sphinx-autobuild

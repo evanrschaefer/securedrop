@@ -87,6 +87,7 @@ pytest-xdist==1.21.0
 pytest==3.3.1             # via pytest-forked, pytest-xdist, testinfra
 python-dateutil==2.6.1    # via arrow, botocore
 python-gilt==1.1.0        # via molecule
+python-vagrant==0.5.15
 pytz==2017.2              # via babel
 pyyaml==3.12              # via ansible, ansible-lint, dparse, molecule, python-gilt, sphinx-autobuild, watchdog, yamllint
 requests==2.18.4          # via docker-py, safety, sphinx
