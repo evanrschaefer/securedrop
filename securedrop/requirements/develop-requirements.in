@@ -5,6 +5,7 @@ docker-py
 flake8
 html-linter
 molecule>=2.*
+netaddr
 pip-tools>=1.10
 #
 # pyenchant should be included here but is in Dockerfile.linting
