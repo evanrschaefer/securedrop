@@ -143,3 +143,7 @@ raw-test-output/
 
 #Used in CI for parsing out tor nightly version
 .tor_version
+
+#Ignore vagrant staging files
+*.box
+*.img
